@@ -13,7 +13,7 @@ export class PostsService {
   private postsUpdated = new Subject<Post[]>();
 
   getPosts() {  
-    this._http.get<{message:string, posts:Post[]}>('http://localhost:3000/api/notes').subscribe((resData) => {
+    this._http.get<{message:string, posts:Post[]}>('http://localhost:3000/api/posts').subscribe((resData) => {
       this.posts = resData.posts;
       this.postsUpdated.next([...this.posts]);
     });
@@ -25,7 +25,10 @@ export class PostsService {
 
   addPost(title: string, content: string) {
     const post: Post = {id:null, title: title, content: content};
-    this.posts.push(post);
-    this.postsUpdated.next([...this.posts]);
+    this._http.post<{message:string, post: Post}>('http://localhost:3000/api/posts', post).subscribe((resData) => {
+      console.log(resData.message);
+      this.posts.push(resData.post);
+      this.postsUpdated.next([...this.posts]);
+    });
   }
 }

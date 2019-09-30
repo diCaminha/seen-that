@@ -1,15 +1,25 @@
 const express = require('express')();
+const bodyParser = require('body-parser');
+
+express.use(bodyParser.json());
+express.use(bodyParser.urlencoded({extended: false}));
 
 express.use((req,res,next) => {
 
     res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Header', 'Origin, X-Requested-With, Content-Type, Accept');
+    res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, OPTIONS, DELETE, PUT');
     next();
 
 });
 
-express.use('/api/notes',(req, res, next) => {
+express.post('/api/posts', (req, res, next) => {
+    const post = req.body;
+    console.log(post);
+    res.status(201).json({message: 'Post created with success', post: post});
+});
+
+express.use('/api/posts',(req, res, next) => {
 
      posts = [
         { id: 'idnumber1',title: 'First note', content: 'this was created auto by code'},
