@@ -1,5 +1,14 @@
 const express = require('express')();
 const bodyParser = require('body-parser');
+const mongoose = require('mongoose');
+
+const Post  = require('./backend/models/post');
+
+mongoose.connect('mongodb://bala:dega0201@ds229088.mlab.com:29088/seenthat').then(() => {
+    console.log('connected to db');
+}).catch(() => {
+    console.error('error connecting to db');
+});
 
 express.use(bodyParser.json());
 express.use(bodyParser.urlencoded({extended: false}));
@@ -14,24 +23,21 @@ express.use((req,res,next) => {
 });
 
 express.post('/api/posts', (req, res, next) => {
-    const post = req.body;
-    console.log(post);
+    const post = new Post({
+        title: req.body.title,
+        content: req.body.content
+    });
+    post.save();
     res.status(201).json({message: 'Post created with success', post: post});
 });
 
 express.use('/api/posts',(req, res, next) => {
 
-     posts = [
-        { id: 'idnumber1',title: 'First note', content: 'this was created auto by code'},
-        { id: 'idnumber2',title: 'Sec note', content: 'this was created auto by code'},
-        { id: 'idnumber3',title: 'Third note', content: 'this was created auto by code'},
-        { id: 'idnumber4',title: 'Fourth note', content: 'this was created auto by code'}
-
-    ];
-
-    res.status(200).json({
-        message: 'Posts fetched',
-        posts: posts
+    Post.find().then(documents => {
+        res.status(200).json({
+            message: 'Posts fetched',
+            posts: documents
+        });
     });
 });
 
