@@ -27,8 +27,12 @@ express.post('/api/posts', (req, res, next) => {
         title: req.body.title,
         content: req.body.content
     });
-    post.save();
-    res.status(201).json({message: 'Post created with success', post: post});
+    post.save().then(postSaved => {
+        res.status(201).json({
+            message: 'Post created with success', 
+            postId: postSaved._id
+        });
+    });
 });
 
 express.get('/api/posts',(req, res, next) => {
@@ -42,7 +46,6 @@ express.get('/api/posts',(req, res, next) => {
 });
 
 express.delete('/api/posts/:id', (req, res, next) => {
-    console.log('ddddddd');
     Post.deleteOne({_id: req.params.id}).then(() => {
         res.status(200).json({message: 'Post deleted!'});
     });
