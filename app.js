@@ -31,13 +31,20 @@ express.post('/api/posts', (req, res, next) => {
     res.status(201).json({message: 'Post created with success', post: post});
 });
 
-express.use('/api/posts',(req, res, next) => {
+express.get('/api/posts',(req, res, next) => {
 
     Post.find().then(documents => {
         res.status(200).json({
             message: 'Posts fetched',
             posts: documents
         });
+    });
+});
+
+express.delete('/api/posts/:id', (req, res, next) => {
+    console.log('ddddddd');
+    Post.deleteOne({_id: req.params.id}).then(() => {
+        res.status(200).json({message: 'Post deleted!'});
     });
 });
 
