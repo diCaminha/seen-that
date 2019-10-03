@@ -23,6 +23,7 @@ express.use((req,res,next) => {
 });
 
 express.post('/api/posts', (req, res, next) => {
+    console.log('teste post');
     const post = new Post({
         title: req.body.title,
         content: req.body.content
@@ -33,6 +34,28 @@ express.post('/api/posts', (req, res, next) => {
             postId: postSaved._id
         });
     });
+});
+
+express.get('/api/posts/:id', (req, res, next) => {
+    Post.findById({_id: req.params.id}).then(post => {
+        res.status(200).json({post});
+    });
+});
+
+express.put('/api/posts/:id', (req, res, next) => {
+    console.log(req.body);
+    const post = new Post({
+        _id: req.body.post.id,
+        title: req.body.post.title,
+        content: req.body.post.content
+    });
+
+    Post.updateOne({_id: req.params.id}, post).then(postUpdated => {
+        res.status(200).json({
+            message: 'Post updated!'
+        });
+    });
+
 });
 
 express.get('/api/posts',(req, res, next) => {

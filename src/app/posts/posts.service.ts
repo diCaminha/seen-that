@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Subject, Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 import { Post } from './post.model';
@@ -41,6 +41,18 @@ export class PostsService {
       this.posts.push(post);
       this.postsUpdated.next([...this.posts]);
     });
+  }
+
+  updatePost(post: Post): any {
+    console.log(post);
+    this._http.put(`http://localhost:3000/api/posts/${post.id}`, {post})
+      .subscribe(res => {
+        console.log(res);
+      });
+  }
+
+  getPostById(id: string): any {
+    return this._http.get<{_id:string, title: string, content: string}>(`http://localhost:3000/api/posts/${id}`);
   }
 
   deletePost(id: string) {
